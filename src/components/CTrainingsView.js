@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 
 const CTrainingsView = ({getTrainings, cRow, deleteTraining}) => {
     const customersTrainingsUrl = cRow
+    console.log(customersTrainingsUrl)
     const classes = useStyles()
     const [open, setOpen] = useState(false)
     const [cTrainingData, setTrainingData] = useState([])

@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import moment from 'moment'
 import Paper from '@material-ui/core/Paper';
+import customerService from "./services/customers"
+import trainingsService from "./services/trainings"
 
 import axios from 'axios';
 
@@ -25,6 +27,12 @@ function App() {
 
   //fetching the customerData
   const fetchCustomers = async () => {
+    customerService.getAll()
+    
+    customerService.create({firstname: "", lastname:"", streetaddress:"", postcode:"",
+    city:"", email:"", phone:""})
+    customerService.update({firstname: "", lastname:"", streetaddress:"", postcode:"",
+    city:"", email:"", phone:""}, "https://customerrest.herokuapp.com/api/customers/11")
     try{
       const response = await axios.get("https://customerrest.herokuapp.com/api/customers")
       const customers = response.data.content
@@ -35,8 +43,13 @@ function App() {
       setOpen(true)
     }
   }
+
+  
   //fetching the trainingsData, and changing the date format using moment.js
   const fetchTrainings = async () => {
+    //trainingsService.create({date:"", activity:"uuuuuuuu", duration :"", customer:"https://customerrest.herokuapp.com/api/customers/35"})
+   //const trrr = await trainingsService.getAllWithCustomerData("https://customerrest.herokuapp.com/api/customers/70/trainings")
+   //console.log("all", trrr)
     try{
       const response = await axios.get("https://customerrest.herokuapp.com/api/trainings")
       const trainings = response.data.content
@@ -63,6 +76,7 @@ function App() {
   const deleteCustomer = async (name, link) => {
     if(window.confirm("are you sure?")){
       try{
+        console.log(link)
         await axios.delete(link)
         fetchCustomers()
         setMessage(`Customer ${name} deleted`)
@@ -108,6 +122,7 @@ const addCustomer = async (customer, link) => {
   //delete training
   const deleteTraining = async (link, boolean) => {
     if(window.confirm("are you sure?")){
+      console.log("deltee", link)
       try{
         await axios.delete(link)
       

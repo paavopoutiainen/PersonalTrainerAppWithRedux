@@ -4,6 +4,8 @@ import 'react-table/react-table.css'
 import Button from '@material-ui/core/Button';
 import axios from "axios"
 import moment from "moment"
+import trainingsService from "../services/trainings"
+
 
 const Trainings = ({getTrainings, deleteTraining}) => {
  
@@ -13,6 +15,8 @@ const Trainings = ({getTrainings, deleteTraining}) => {
   //trainings = trainings.map(x => console.log('x', x))
   const fetchTrainingsWithCustomerData = async () => {
     try{
+      const trrr = await trainingsService.getAllWithCustomerData()
+   console.log("all", trrr)
       const response = await axios.get("https://customerrest.herokuapp.com/gettrainings")
       const trainingsArray = response.data.map(t => {
       const date = moment(t.date)

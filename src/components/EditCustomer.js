@@ -30,6 +30,7 @@ city:"", email:"", phone:""})
     }
     function handleCloseSave(){
         setOpen(false)
+        console.log(customer.links[1].href)
         editCustomer(customerState, customer.links[1].href)
         
     }

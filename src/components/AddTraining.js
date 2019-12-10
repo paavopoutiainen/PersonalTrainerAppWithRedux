@@ -20,6 +20,7 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
         setOpenSnack(false)
     }
     function handleClose(){
+      console.log(dataOfCustomer.links[1].href)
         setOpen(false)
     }
 
