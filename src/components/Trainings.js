@@ -2,51 +2,32 @@ import React, {useState, useEffect} from 'react';
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import Button from '@material-ui/core/Button';
-import axios from "axios"
-import moment from "moment"
-import trainingsService from "../services/trainings"
+import { connect } from "react-redux"
+import { getTrainingsWithCustomers } from "../reducers/trainingsWithCustomersReducer"
+import { getTrainings, deleteTraining } from "../reducers/trainingsReducer"
+import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
 
-const Trainings = ({getTrainings, deleteTraining}) => {
- 
-  //const [trainingsState, setTraining] = useState({customer: "", date: "", duration:"", activity:""})
-  const [trainings, setTrainings] = useState([])
 
-  //trainings = trainings.map(x => console.log('x', x))
-  const fetchTrainingsWithCustomerData = async () => {
-    try{
-      const trrr = await trainingsService.getAllWithCustomerData()
-   console.log("all", trrr)
-      const response = await axios.get("https://customerrest.herokuapp.com/gettrainings")
-      const trainingsArray = response.data.map(t => {
-      const date = moment(t.date)
-      const customer = t.customer !== null ? `${t.customer.firstname} ${t.customer.lastname}`: null
-      return { ...t, customer: customer, date: date.format("LLLL")}
-    })
-    setTrainings(trainingsArray)
-    }catch(exception){
-      console.error(exception)
-    }
-    
-  }
-//here we fetch the trainings with customers and set them to the state of this component
+//{getTrainings, deleteTraining}
+const Trainings = (props) => {
+
   useEffect(() => {
-    fetchTrainingsWithCustomerData()
+    props.getTrainingsWithCustomers()
   }, [])
- //this hook is called when the component is removed from the ui
- //here we update the training state in App.js since the calendar component is receiving that state as a prop when it is mounted
-  useEffect(() => {
-    return () => {
-     getTrainings()
+ 
+  const handleDeleteClick = async (link, row) => {
+    if(window.confirm("are you sure?")){
+      try {
+        await props.deleteTraining(link)
+        await props.getTrainingsWithCustomers()
+        props.newNotificationActionCreator("Training deleted")
+      }catch (exception) {
+        console.error(exception)
+      }
+      
     }
-  })
-
-  const handleDeleteClick = async (link) => {
-    await deleteTraining(link, true)
-    fetchTrainingsWithCustomerData()
-  }
-  
-
+}
   const baseUrlForDeletingTrainings = "https://customerrest.herokuapp.com/api/trainings/"
 
   const columns = [
@@ -79,7 +60,7 @@ const Trainings = ({getTrainings, deleteTraining}) => {
   return (
       <div>
         <ReactTable 
-          data={trainings}
+          data={props.trainings}
           columns={columns}
           filterable={true}
         />
@@ -87,4 +68,10 @@ const Trainings = ({getTrainings, deleteTraining}) => {
     );
 }
 
-export default Trainings;
+const mapStateToProps = (state) => {
+  return {
+    trainings: state.trainingsWithCustomers
+  }
+}
+
+export default connect(mapStateToProps, { getTrainingsWithCustomers, getTrainings, deleteTraining, newNotificationActionCreator })(Trainings)

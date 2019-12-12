@@ -6,8 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { connect } from "react-redux"
+import { addCustomerActionCreator } from "../reducers/customerReducer"  
+import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
-const AddCustomer = ({addCustomer}) => {
+const AddCustomer = (props) => {
 
     const baseUrlForCustomers = "https://customerrest.herokuapp.com/api/customers"
 
@@ -30,7 +33,9 @@ const AddCustomer = ({addCustomer}) => {
     
     //Call addCustomerFunction when save button clicked
     function handleCloseSave(){
-        addCustomer(customerState, baseUrlForCustomers)
+        //addCustomer(customerState, baseUrlForCustomers)
+        props.addCustomerActionCreator(customerState)
+        props.newNotificationActionCreator(`New customer ${customerState.firstname} ${customerState.lastname} created`)
         setOpen(false)
         setCustomer({firstname: "", lastname:"", streetaddress:"", postcode:"",
         city:"", email:"", phone:""})
@@ -125,4 +130,4 @@ const AddCustomer = ({addCustomer}) => {
     );
 };
 
-export default AddCustomer;
+export default connect(null, { addCustomerActionCreator, newNotificationActionCreator } )(AddCustomer)

@@ -27,6 +27,7 @@ const update = async (editedCustomer, link) => {
     try{
       const response = await axios.put(link, editedCustomer)
       console.log(response)
+      return response.data
     } catch(exception) {
       console.error(exception)
     }

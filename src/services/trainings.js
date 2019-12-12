@@ -50,9 +50,9 @@ const getAllWithCustomerData = async () => {
       }
 }
 
-const getTrainingsByCustomer = async () => {
+const getTrainingsByCustomer = async (link) => {
     try{
-        const response = await axios.get(baseUrlForTrainigsWithCustomer)
+        const response = await axios.get(link)
         const data = response.data
         const filtered = data.content.filter(t => t.date !== undefined)
         const content = filtered.map(t => {

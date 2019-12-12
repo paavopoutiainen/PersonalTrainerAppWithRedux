@@ -6,21 +6,24 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { connect } from "react-redux"
+import { addTrainingActionCreator } from "../reducers/trainingsReducer"
+import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
 
-const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
+const AddTraining = (props) => {
 
     const[open, setOpen] = useState(false)
-    const [training, setTraining] = useState({date:"", activity:"", duration :"", customer:dataOfCustomer.links[1].href})
-
-    let nameOfTheCustomer = `${dataOfCustomer.firstname} ${dataOfCustomer.lastname}`
+    const [training, setTraining] = useState({date:"", activity:"", duration :"", customer:props.dataOfCustomer.links[1].href})
+  
+    let nameOfTheCustomer = `${props.dataOfCustomer.firstname} ${props.dataOfCustomer.lastname}`
 
     function handleClickOpen(){
         setOpen(true)
-        setOpenSnack(false)
+        //setOpenSnack(false)
     }
     function handleClose(){
-      console.log(dataOfCustomer.links[1].href)
+      console.log(props.dataOfCustomer.links[1].href)
         setOpen(false)
     }
 
@@ -29,7 +32,9 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
         setTraining({...training, [e.target.name]: e.target.value}) 
     }
     function handleCloseSave(){
-        addTraining(nameOfTheCustomer, {...training, date:`${training.date}:00.000+02:00`})
+        //addTraining(nameOfTheCustomer, {...training, date:`${training.date}:00.000+02:00`})
+        props.addTrainingActionCreator({...training, date:`${training.date}:00.000+02:00`})
+        props.newNotificationActionCreator(`Training added for customer ${props.dataOfCustomer.firstname} ${props.dataOfCustomer.lastname}`)
         setOpen(false)
     }
 
@@ -39,7 +44,7 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
         Add Training
         </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add training for the customer</DialogTitle>
+    <DialogTitle id="form-dialog-title">Add training for customer {nameOfTheCustomer}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Give information of the training
@@ -55,9 +60,7 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
             value = {training.date}
             
           />
-          
           <TextField
-           
             margin="dense"
             name="activity"
             label="Activity"
@@ -66,7 +69,6 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
             value = {training.activity}
           />
           <TextField
-           
            margin="dense"
            name="duration"
            label="Duration"
@@ -89,4 +91,4 @@ const AddTraining = ({setOpenSnack, dataOfCustomer, addTraining}) => {
        
 };
 
-export default AddTraining;
+export default connect(null, { addTrainingActionCreator, newNotificationActionCreator })(AddTraining)

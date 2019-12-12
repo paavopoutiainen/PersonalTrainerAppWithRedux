@@ -6,17 +6,21 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { connect } from "react-redux"
+import { editCustomerActionCreator } from "../reducers/customerReducer"
+import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
-const EditCustomer = ({customer, editCustomer}) => {
+
+const EditCustomer = (props) => {
     const[open, setOpen] = useState(false)
     const[customerState, setCustomer] = useState({firstname: "", lastname:"", streetaddress:"", postcode:"",
 city:"", email:"", phone:""})
 
 
     function handleClickOpen() {
-        setCustomer({firstname: customer.firstname, lastname:customer.lastname, streetaddress:customer.streetaddress,
-             postcode:customer.postcode, city:customer.city, email:customer.email, phone:customer.phone})
-        console.log(customer)
+        setCustomer({firstname: props.customer.firstname, lastname: props.customer.lastname, streetaddress: props.customer.streetaddress,
+             postcode:props.customer.postcode, city:props.customer.city, email:props.customer.email, phone:props.customer.phone})
+        console.log(props.customer)
         setOpen(true)
     }
 
@@ -28,10 +32,12 @@ city:"", email:"", phone:""})
         setCustomer({...customerState, [e.target.name] : e.target.value})
         console.log(customerState)
     }
-    function handleCloseSave(){
+    const handleCloseSave = () => {
+        
+        console.log(props.customer.links[1].href)
+        props.editCustomerActionCreator(customerState, props.customer.links[1].href)
+        props.newNotificationActionCreator(`Customer ${customerState.firstname} ${customerState.lastname} edited`)
         setOpen(false)
-        console.log(customer.links[1].href)
-        editCustomer(customerState, customer.links[1].href)
         
     }
     return (
@@ -124,4 +130,4 @@ city:"", email:"", phone:""})
     );
 };
 
-export default EditCustomer;
+export default connect(null, { editCustomerActionCreator, newNotificationActionCreator })(EditCustomer)

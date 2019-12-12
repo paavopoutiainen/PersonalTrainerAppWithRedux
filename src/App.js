@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import Customers from "./components/Customers"
@@ -7,173 +7,54 @@ import CalendarPage from "./components/CalendarPage"
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
-import moment from 'moment'
+import Snackbar from '@material-ui/core/Snackbar'
 import Paper from '@material-ui/core/Paper';
-import customerService from "./services/customers"
-import trainingsService from "./services/trainings"
+import { connect } from 'react-redux';
+import { initializeCustomers } from "./reducers/customerReducer"
+import { getTrainings } from "./reducers/trainingsReducer"
+import { emptyNotificationActionCreator } from "./reducers/notificationReducer"
+import { getTrainingsWithCustomers } from "./reducers/trainingsWithCustomersReducer"
 
 import axios from 'axios';
 
 
 
-function App() {
+function App(props) {
  
 
-  const [customers, setCustomers] = useState([])
-  const [trainings, setTrainings] = useState([])
-  const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState("")
-
-  //fetching the customerData
-  const fetchCustomers = async () => {
-    customerService.getAll()
-    
-    customerService.create({firstname: "", lastname:"", streetaddress:"", postcode:"",
-    city:"", email:"", phone:""})
-    customerService.update({firstname: "", lastname:"", streetaddress:"", postcode:"",
-    city:"", email:"", phone:""}, "https://customerrest.herokuapp.com/api/customers/11")
-    try{
-      const response = await axios.get("https://customerrest.herokuapp.com/api/customers")
-      const customers = response.data.content
-      setCustomers(customers)
-    } catch(exception) {
-      console.error(exception)
-      setMessage(`Couldn't fetch customer data`)
-      setOpen(true)
-    }
-  }
 
   
-  //fetching the trainingsData, and changing the date format using moment.js
-  const fetchTrainings = async () => {
-    //trainingsService.create({date:"", activity:"uuuuuuuu", duration :"", customer:"https://customerrest.herokuapp.com/api/customers/35"})
-   //const trrr = await trainingsService.getAllWithCustomerData("https://customerrest.herokuapp.com/api/customers/70/trainings")
-   //console.log("all", trrr)
-    try{
-      const response = await axios.get("https://customerrest.herokuapp.com/api/trainings")
-      const trainings = response.data.content
-      
-      const formattedDatesTrainings = trainings.map(t => {
-        var date = moment(t.date)
-        return {...t, date: date.format("LLLL")} 
-      })
-      setTrainings(formattedDatesTrainings)
-    } catch(exception) {
-      console.error(exception)
-      setMessage(`Couldn't fetch training data`)
-      setOpen(true)
-    }
-    
-  }
   //After the first render
   useEffect(()=>{
-    fetchCustomers()
-    fetchTrainings()
+    //fetchCustomers()
+    props.initializeCustomers()
+    //fetchTrainings()
+    props.getTrainings()
+
   }
     , [])
-  //delete customer
-  const deleteCustomer = async (name, link) => {
-    if(window.confirm("are you sure?")){
-      try{
-        console.log(link)
-        await axios.delete(link)
-        fetchCustomers()
-        setMessage(`Customer ${name} deleted`)
-        setOpen(true)
-      } catch (exception) {
-        console.error(exception)
-        setMessage(`Couldn't delete customer ${name}`)
-        setOpen(true)
-      }
-      
-    }
-  }
-
-  //edit customer
-  const editCustomer = async (editedCustomer, link) => {
-    try{
-      await axios.put(link, editedCustomer)
-      await fetchCustomers()
-      setMessage("Customer edited")
-      setOpen(true)
-    } catch(exception) {
-      console.error(exception)
-      setMessage("Wasn't able to edit the customer")
-      setOpen(true)
-    }
-    
-  }
-  //add customer
-const addCustomer = async (customer, link) => {
-  try{
-    const response = await axios.post(link, customer)
-    console.log(response)
-    fetchCustomers()
-    setMessage(`New customer ${response.data.firstname} ${response.data.lastname} added`)
-    setOpen(true)
-  } catch (exception) {
-    console.error(exception)
-    setMessage("Wasn't able to add customer")
-    setOpen(true)
-  }
-}
-
-  //delete training
-  const deleteTraining = async (link, boolean) => {
-    if(window.confirm("are you sure?")){
-      console.log("deltee", link)
-      try{
-        await axios.delete(link)
-      
-        if(boolean){
-          setMessage("Training deleted")
-          setOpen(true)
-        }
-      }catch(exception){
-        console.error(exception)
-        setMessage("Couldn't delete the training")
-        setOpen(true)
-      }
-      
-    }
-  }
-  
-  //add training
-  const addTraining = async (customerName, training) => {
-    try{
-      await axios.post("https://customerrest.herokuapp.com/api/trainings", training)
-      await fetchTrainings()
-      setMessage(`Added training for customer ${customerName}`)
-      setOpen(true)
-    } catch (exception){
-      console.error(exception)
-      setMessage(`Couldn't add training for customer ${customerName}`)
-      setOpen(true)
-    }
-    
-  }
 
   function customerRender(){
     return (
-      <Customers getTrainings={fetchTrainings} customers={customers} addCustomer={addCustomer} 
-      deleteCustomer={deleteCustomer} editCustomer ={editCustomer} 
-      addTraining={addTraining} deleteTraining={deleteTraining} setOpenSnack={setOpen}></Customers>
+      <Customers></Customers>
+      /*customers={customers} addCustomer={addCustomer} 
+      deleteCustomer={deleteCustomer} editCustomer ={editCustomer}  */
     )
   }  
   function trainingsRender(){
     return (
-      <Trainings getTrainings={fetchTrainings} deleteTraining = {deleteTraining}></Trainings>
+      <Trainings></Trainings>
     )
   }
 
   function calendarRender(){
-    return <CalendarPage trainings={trainings}></CalendarPage>
+    return <CalendarPage></CalendarPage>
   }
 
 //Closing the snackbar 
   function handleClose(){
-    setOpen(false)
+    
+    props.emptyNotificationActionCreator()
   }
 
   return (
@@ -205,10 +86,21 @@ const addCustomer = async (customer, link) => {
             <Route exact path="/calendar" render={calendarRender}></Route>
           </Switch>
       </BrowserRouter>
-      <Snackbar open = {open} autoHideDuration={3000} onClose= {handleClose} message={message}/>
+      <Snackbar open = {props.snackbarOpen} autoHideDuration={3000} onClose= {handleClose} message={props.notification}/>
       </Paper>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+      customers: state.customers,
+      notification: state.notification.notification,
+      snackbarOpen: state.notification.open
+    }
+}
+
+export default connect(mapStateToProps, { initializeCustomers, 
+  getTrainings, 
+  emptyNotificationActionCreator,
+  getTrainingsWithCustomers })(App)

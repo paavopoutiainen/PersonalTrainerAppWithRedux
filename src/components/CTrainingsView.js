@@ -9,9 +9,13 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import ReactTable from 'react-table'
-import moment from 'moment'
-import axios from "axios"
+
 import Snackbar from '@material-ui/core/Snackbar';
+import { connect } from "react-redux"
+import { deleteTraining, getTrainings } from "../reducers/trainingsReducer"
+import { getTrainingsForCustomer } from "../reducers/customersTrainingsReducer"
+import { newNotificationActionCreator } from "../reducers/notificationReducer"
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -29,39 +33,49 @@ const useStyles = makeStyles(theme => ({
   });
   
 
-const CTrainingsView = ({getTrainings, cRow, deleteTraining}) => {
-    const customersTrainingsUrl = cRow
-    console.log(customersTrainingsUrl)
+const CTrainingsView = ( props) => {
+    const customersTrainingsUrl = props.cRow
+    //console.log(customersTrainingsUrl)
     const classes = useStyles()
     const [open, setOpen] = useState(false)
-    const [cTrainingData, setTrainingData] = useState([])
     const [booleanForFetch, setBoolean] = useState(false)
     //for snackbar
     const [message, setMessage] = useState("")
     const [openSnack, setOpenSnack] = useState(false)
-
-    
-    //fetch customer data
-    const fetchCustomerTrainings = async () => {
-      try{
-        const response = await axios.get(customersTrainingsUrl)
-        const data = response.data
-        const filtered = data.content.filter(t => t.date !== undefined)
-        const content = filtered.map(t => {
-            var date =  moment(t.date)
-            return {...t, date: date.format("LLLL") } 
-        })
-        setTrainingData(content)
-      }catch(exception){
-        console.error(exception)
-      }
-    }
       
     //to fetch only when the dialog is clicked open("trainings" button)
     if(booleanForFetch){
-      fetchCustomerTrainings()
+      //fetchCustomerTrainings()
+      props.getTrainingsForCustomer(customersTrainingsUrl)
       setBoolean(false)
     }
+
+    const handleDeleteClick = async (link) => {
+      if(window.confirm("are you sure?")){
+        try{
+          await props.deleteTraining(link)
+          await props.getTrainingsForCustomer(customersTrainingsUrl)
+          props.newNotificationActionCreator("Training deleted")
+        }catch(exception){
+          console.error(exception)
+        }
+      }
+    }
+    const handleClickOpen = () => {
+        setOpen(true);
+        setBoolean(true)
+      };
+    
+      const handleCloseDialog = async () => {
+        setOpen(false);
+        props.getTrainings()
+      };
+
+      //this is for snackbar/notification
+      const handleClose = () => {
+        setOpenSnack(false)
+      }
+
     
 
     const columns = [{
@@ -84,33 +98,7 @@ const CTrainingsView = ({getTrainings, cRow, deleteTraining}) => {
         onClick={() => handleDeleteClick(row.original.links[1].href)}>Delete</Button>
     }
     ]
-    const handleDeleteClick = async (link) => {
-      try{
-        await deleteTraining(link, false)
-        fetchCustomerTrainings()
-        setMessage("Training deleted")
-        setOpenSnack(true)
-      }catch(exception) {
-        console.error(exception)
-        setMessage("wasn't able to delete the training")
-        setOpenSnack(true)
-      }
-    }
-    const handleClickOpen = () => {
-        setOpen(true);
-        setBoolean(true)
-      };
     
-      const handleCloseDialog = async () => {
-        setOpen(false);
-        await getTrainings()
-      };
-
-      //this is for snackbar/notification
-      const handleClose = () => {
-        setOpenSnack(false)
-      }
-
 
     return (
         
@@ -130,7 +118,7 @@ const CTrainingsView = ({getTrainings, cRow, deleteTraining}) => {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <ReactTable data = {cTrainingData} columns = {columns}></ReactTable>
+        <ReactTable data = {props.customersTrainings} columns = {columns}></ReactTable>
       </Dialog>
       <Snackbar open = {openSnack} autoHideDuration={3000} onClose= {handleClose} message={message}/>
 
@@ -139,4 +127,10 @@ const CTrainingsView = ({getTrainings, cRow, deleteTraining}) => {
   );
 };
 
-export default CTrainingsView;
+const mapStateToProps = (state) => {
+  return {
+    customersTrainings: state.customersTrainings
+  }
+}
+
+export default connect(mapStateToProps, { deleteTraining, getTrainingsForCustomer, getTrainings, newNotificationActionCreator })(CTrainingsView)

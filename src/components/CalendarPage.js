@@ -2,13 +2,14 @@ import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import "react-big-calendar/lib/css/react-big-calendar.css"
+import { connect } from "react-redux"
 
 const localizer = momentLocalizer(moment)
 
-const CalendarPage = ({trainings}) => {
+const CalendarPage = (props) => {
 
    
-    let events = trainings.map(t => {
+    let events = props.trainings.map(t => {
         let date = new Date(t.date)
         
         let events = {
@@ -35,4 +36,10 @@ const CalendarPage = ({trainings}) => {
     );
 };
 
-export default CalendarPage;
+const mapStateToProps = (state) => {
+    return {
+        trainings: state.trainings
+    }
+}
+
+export default connect(mapStateToProps)(CalendarPage)
