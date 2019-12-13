@@ -15,15 +15,9 @@ import { getTrainings } from "./reducers/trainingsReducer"
 import { emptyNotificationActionCreator } from "./reducers/notificationReducer"
 import { getTrainingsWithCustomers } from "./reducers/trainingsWithCustomersReducer"
 
-import axios from 'axios';
-
-
 
 function App(props) {
- 
 
-
-  
   //After the first render
   useEffect(()=>{
     //fetchCustomers()
@@ -37,8 +31,6 @@ function App(props) {
   function customerRender(){
     return (
       <Customers></Customers>
-      /*customers={customers} addCustomer={addCustomer} 
-      deleteCustomer={deleteCustomer} editCustomer ={editCustomer}  */
     )
   }  
   function trainingsRender(){

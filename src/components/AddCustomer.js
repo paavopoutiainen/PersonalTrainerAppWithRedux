@@ -12,8 +12,6 @@ import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
 const AddCustomer = (props) => {
 
-    const baseUrlForCustomers = "https://customerrest.herokuapp.com/api/customers"
-
     const [open, setOpen] = useState(false)
     const [customerState, setCustomer] = useState({firstname: "", lastname:"", streetaddress:"", postcode:"",
   city:"", email:"", phone:""})
@@ -31,9 +29,8 @@ const AddCustomer = (props) => {
         setCustomer({...customerState, [e.target.name]: e.target.value})
     }
     
-    //Call addCustomerFunction when save button clicked
+    //Call addCustomerActionCreator when save button clicked, make notification and close the dialog
     function handleCloseSave(){
-        //addCustomer(customerState, baseUrlForCustomers)
         props.addCustomerActionCreator(customerState)
         props.newNotificationActionCreator(`New customer ${customerState.firstname} ${customerState.lastname} created`)
         setOpen(false)

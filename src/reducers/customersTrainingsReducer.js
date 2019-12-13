@@ -12,7 +12,6 @@ const customersTrainingsReducer = (state = [], action) => {
 export const getTrainingsForCustomer = (link) => {
     return async (dispatch) => {
         const trainings = await trainingsService.getTrainingsByCustomer(link)
-        console.log("trainings indiviual", trainings)
         dispatch({
             type: "GET_CUSTOMERTRAININGS",
             trainings

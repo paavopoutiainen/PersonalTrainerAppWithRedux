@@ -46,7 +46,7 @@ city:"", email:"", phone:""})
         Edit
         </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Edit customer</DialogTitle>
+    <DialogTitle id="form-dialog-title">Edit customer {props.customer.firstname} {props.customer.lastname}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Update the information of the customer

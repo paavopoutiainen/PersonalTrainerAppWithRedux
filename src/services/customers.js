@@ -16,7 +16,6 @@ const getAll = async () => {
 const create = async (customer) => {
     try{
         const response = await axios.post(baseUrl, customer)
-        console.log(response)
         return response.data
     } catch(exception) {
         console.error(exception)
@@ -26,7 +25,6 @@ const create = async (customer) => {
 const update = async (editedCustomer, link) => {
     try{
       const response = await axios.put(link, editedCustomer)
-      console.log(response)
       return response.data
     } catch(exception) {
       console.error(exception)

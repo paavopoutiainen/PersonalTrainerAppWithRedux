@@ -9,11 +9,8 @@ const customerReducer = (state = [], action) => {
         case "EDIT_CUSTOMER":
             //const uniqueLink = action.data.links[1].href
             const editedCustomer = action.data
-            console.log("edited",editedCustomer)
-            console.log(action.link)
             return state.filter(c => !c.links[1].href.match(action.link)).concat(editedCustomer)
         case "DELETE_CUSTOMER":
-            console.log("here")
             return state.filter(c => !c.links[1].href.match(action.link))
         default: return state    
     }
@@ -54,7 +51,6 @@ export const editCustomerActionCreator = (customer, link) => {
 }
 export const deleteCustomerActionCreator = (link) => {
     return async (dispatch) => {
-        console.log("what")
         await customerService.deleteCustomer(link)
         dispatch({
             type: "DELETE_CUSTOMER",

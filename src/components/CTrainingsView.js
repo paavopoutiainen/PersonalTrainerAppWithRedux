@@ -9,8 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import ReactTable from 'react-table'
-
-import Snackbar from '@material-ui/core/Snackbar';
 import { connect } from "react-redux"
 import { deleteTraining, getTrainings } from "../reducers/trainingsReducer"
 import { getTrainingsForCustomer } from "../reducers/customersTrainingsReducer"
@@ -33,19 +31,15 @@ const useStyles = makeStyles(theme => ({
   });
   
 
-const CTrainingsView = ( props) => {
+const CTrainingsView = (props) => {
     const customersTrainingsUrl = props.cRow
-    //console.log(customersTrainingsUrl)
     const classes = useStyles()
     const [open, setOpen] = useState(false)
     const [booleanForFetch, setBoolean] = useState(false)
-    //for snackbar
-    const [message, setMessage] = useState("")
-    const [openSnack, setOpenSnack] = useState(false)
+  
       
     //to fetch only when the dialog is clicked open("trainings" button)
     if(booleanForFetch){
-      //fetchCustomerTrainings()
       props.getTrainingsForCustomer(customersTrainingsUrl)
       setBoolean(false)
     }
@@ -66,17 +60,10 @@ const CTrainingsView = ( props) => {
         setBoolean(true)
       };
     
-      const handleCloseDialog = async () => {
+    const handleCloseDialog = async () => {
         setOpen(false);
         props.getTrainings()
-      };
-
-      //this is for snackbar/notification
-      const handleClose = () => {
-        setOpenSnack(false)
-      }
-
-    
+    };
 
     const columns = [{
         Header: 'Date',
@@ -120,7 +107,7 @@ const CTrainingsView = ( props) => {
         </AppBar>
         <ReactTable data = {props.customersTrainings} columns = {columns}></ReactTable>
       </Dialog>
-      <Snackbar open = {openSnack} autoHideDuration={3000} onClose= {handleClose} message={message}/>
+      
 
 
     </div>

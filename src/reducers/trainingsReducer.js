@@ -7,8 +7,9 @@ const trainingsReducer = (state = [], action) => {
         case "ADD_TRAINING":
             return state.concat(action.addedTraining)
         case "DELETE_TRAINING":
-            const idOfTheRemoved = action.data.substring(44)
-            return state.filter(t => t.links[1].href.substring(49).indexOf(idOfTheRemoved))
+            //const idOfTheRemoved = action.data.substring(44)
+            console.log(action.id)
+            return state.filter(t => t.links[1].href.substring(49).indexOf(action.id) === -1)
         default: return state    
     }
 
@@ -26,7 +27,6 @@ export const getTrainings = () => {
 export const addTrainingActionCreator = (newTraining) => {
     return async dispatch => {
         const addedTraining = await trainingsService.create(newTraining)
-        console.log("added training", addedTraining)
         dispatch({
             type: "ADD_TRAINING",
             addedTraining
@@ -38,11 +38,10 @@ export const addTrainingActionCreator = (newTraining) => {
 export const deleteTraining = (link) => {
     return async dispatch => {
         const response = await trainingsService.deleteTraining(link)
-      
-        const url = response.config.url.replace(/[/]/g, "")
+        const id = response.config.url.replace(/[/]/g, "").substring(44)
         dispatch({
             type: "DELETE_TRAINING",
-            data: url
+            id
         })
     }
 }
