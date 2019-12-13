@@ -10,14 +10,9 @@ import { connect } from "react-redux"
 import { deleteCustomerActionCreator } from "../reducers/customerReducer"
 import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
-
-//getTrainings, setOpenSnack, deleteCustomer, editCustomer, addCustomer, addTraining, deleteTraining
-
 const Customers = (props) => {
 
-  //props.deleteCustomerActionCreator(row.original.links[1].href)
   const handleDeleteClick = (row) => {
-    console.log("täällä?",row)
     if(window.confirm("are you sure?")){
       try{
         props.deleteCustomerActionCreator(row.original.links[1].href)
@@ -26,12 +21,11 @@ const Customers = (props) => {
         console.error(exception)
       }
     }
-    
   }  
  
 const columns = [{
     Header: 'First name',
-    accessor: 'firstname' // String-based value accessors!
+    accessor: 'firstname' 
   }, {
     Header: 'Last name',
     accessor: 'lastname'
@@ -63,8 +57,6 @@ const columns = [{
     filterable: false,
     sortable: false,
     width: 75,
-    //editCustomer={props.editCustomer}
-    //customer saa kulkea tätä reittiä
     Cell: row => <EditCustomer customer = {row.original} >Delete</EditCustomer>
   },
   {
@@ -90,7 +82,6 @@ const columns = [{
     Cell: row => <CTrainingsView cRow={row.original.links[2].href}></CTrainingsView>
   }
 ]
-//addCustomer={props.addCustomer} 
   return (
       <div>
         <AddCustomer ></AddCustomer>

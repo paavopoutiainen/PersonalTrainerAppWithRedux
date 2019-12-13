@@ -20,7 +20,6 @@ city:"", email:"", phone:""})
     function handleClickOpen() {
         setCustomer({firstname: props.customer.firstname, lastname: props.customer.lastname, streetaddress: props.customer.streetaddress,
              postcode:props.customer.postcode, city:props.customer.city, email:props.customer.email, phone:props.customer.phone})
-        console.log(props.customer)
         setOpen(true)
     }
 
@@ -30,102 +29,100 @@ city:"", email:"", phone:""})
 
     function handleChange(e){
         setCustomer({...customerState, [e.target.name] : e.target.value})
-        console.log(customerState)
     }
-    const handleCloseSave = () => {
-        
-        console.log(props.customer.links[1].href)
+    const handleCloseSave = async () => {
+      try{
         props.editCustomerActionCreator(customerState, props.customer.links[1].href)
         props.newNotificationActionCreator(`Customer ${customerState.firstname} ${customerState.lastname} edited`)
         setOpen(false)
-        
+      }catch(exception) {
+        console.error(exception)
+      }
     }
     return (
         <div>
         <Button size = "small" color="primary" onClick={handleClickOpen}>
         Edit
         </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Edit customer {props.customer.firstname} {props.customer.lastname}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Update the information of the customer
-          </DialogContentText>
-          <TextField
-            autoFocus
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Edit customer {props.customer.firstname} {props.customer.lastname}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Update the information of the customer
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="firstname"
+              label="Firstname"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.firstname}
+            />
+            <TextField
+            
+              margin="dense"
+              name="lastname"
+              label="Lastname"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.lastname}
+            />
+            <TextField
+            
             margin="dense"
-            name="firstname"
-            label="Firstname"
+            name="streetaddress"
+            label="Street address"
             fullWidth
             onChange = {e => handleChange(e)}
-            value = {customerState.firstname}
-          />
-          <TextField
-           
-            margin="dense"
-            name="lastname"
-            label="Lastname"
-            fullWidth
-            onChange = {e => handleChange(e)}
-            value = {customerState.lastname}
-          />
-          <TextField
-           
-           margin="dense"
-           name="streetaddress"
-           label="Street address"
-           fullWidth
-           onChange = {e => handleChange(e)}
-           value = {customerState.streetaddress}
-         />
-         <TextField
-           
-           margin="dense"
-           name="postcode"
-           label="Post code"
-           fullWidth
-           onChange = {e => handleChange(e)}
-           value = {customerState.postcode}
-         />
-         <TextField
-           
-           margin="dense"
-           name="city"
-           label="City"
-           fullWidth
-           onChange = {e => handleChange(e)}
-           value = {customerState.city}
-         />
-         <TextField
-           
-           margin="dense"
-           name="email"
-           label="Email"
-           fullWidth
-           onChange = {e => handleChange(e)}
-           value = {customerState.email}
-         />
-         <TextField
-           
-           margin="dense"
-           name="phone"
-           label="Phone"
-           fullWidth
-           onChange = {e => handleChange(e)}
-           value = {customerState.phone}
-         />
-          
-         
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleCloseSave} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+            value = {customerState.streetaddress}
+            />
+            <TextField
+              
+              margin="dense"
+              name="postcode"
+              label="Post code"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.postcode}
+            />
+            <TextField
+              
+              margin="dense"
+              name="city"
+              label="City"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.city}
+            />
+            <TextField
+              
+              margin="dense"
+              name="email"
+              label="Email"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.email}
+            />
+            <TextField
+              
+              margin="dense"
+              name="phone"
+              label="Phone"
+              fullWidth
+              onChange = {e => handleChange(e)}
+              value = {customerState.phone}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleCloseSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
         </div>
     );
 };

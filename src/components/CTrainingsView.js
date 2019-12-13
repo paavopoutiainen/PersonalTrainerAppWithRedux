@@ -14,8 +14,6 @@ import { deleteTraining, getTrainings } from "../reducers/trainingsReducer"
 import { getTrainingsForCustomer } from "../reducers/customersTrainingsReducer"
 import { newNotificationActionCreator } from "../reducers/notificationReducer"
 
-
-
 const useStyles = makeStyles(theme => ({
     appBar: {
       position: 'relative',
@@ -67,7 +65,7 @@ const CTrainingsView = (props) => {
 
     const columns = [{
         Header: 'Date',
-        accessor: 'date' // String-based value accessors!
+        accessor: 'date' 
       }, {
         Header: 'Activity',
         accessor: 'activity'
@@ -89,28 +87,24 @@ const CTrainingsView = (props) => {
 
     return (
         
-    <div>
-            
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Trainings
-      </Button>
-      <Dialog fullScreen open={open} onClose={handleCloseDialog} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Customers trainings
-            </Typography>
-            <IconButton edge="start" color="inherit" onClick={handleCloseDialog} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <ReactTable data = {props.customersTrainings} columns = {columns}></ReactTable>
-      </Dialog>
-      
-
-
-    </div>
+      <div>
+        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Trainings
+        </Button>
+        <Dialog fullScreen open={open} onClose={handleCloseDialog} TransitionComponent={Transition}>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <Typography variant="h6" className={classes.title}>
+                Customers trainings
+              </Typography>
+              <IconButton edge="start" color="inherit" onClick={handleCloseDialog} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <ReactTable data = {props.customersTrainings} columns = {columns}></ReactTable>
+        </Dialog>
+      </div>
   );
 };
 
